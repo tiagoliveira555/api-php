@@ -1,0 +1,8 @@
+{
+    "name": "tiago/api-mvc",
+    "autoload": {
+        "psr-4": {
+            "app\\": "app/"
+        }
+    }
+}
