@@ -3,8 +3,7 @@
 namespace app\http;
 
 use app\http\middlewares\Queue;
-use app\support\Method;
-use app\support\Uri;
+
 use Exception;
 
 class Router

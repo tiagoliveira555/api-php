@@ -4,41 +4,46 @@ namespace app\http;
 
 class Request
 {
-    private string $httpMethod = '';
-    private string $uri = '';
-    private array $params = [];
-    private array $postVars = [];
-    private array $queryParams = [];
-    private array $headers = [];
-
-    public function __construct()
+    public static function all()
     {
-        $this->postVars    = $_POST ?? [];
-        $this->queryParams = $_GET ?? [];
-        $this->headers     = getallheaders();
-        $this->uri         = $this->getUri();
-        $this->httpMethod  = $this->getHttpMethod();
+        $input = file_get_contents('php://input');
+        return strlen($input) ? json_decode($input, true) : '';
     }
 
-    public function setParams($params)
+    public static function only(string|array $only)
     {
-        $this->params = $params;
+        $fields = self::all();
+        $fieldsKey = array_keys($fields);
+
+        $array = [];
+        foreach ($fieldsKey as $index => $value) {
+            $onlyFields = is_string($only) ? $only : ($only[$index] ?? null);
+            if (!empty($fields[$onlyFields])) {
+                $array[$onlyFields] = $fields[$onlyFields];
+            }
+        }
+        return (object)$array;
     }
 
-    public function getParams()
+    public static function except(string|array $excepts)
     {
-        return $this->params;
+        $fields = self::all();
+
+        if (is_array($excepts)) {
+            foreach ($excepts as $index => $value) {
+                unset($fields[$value]);
+            }
+        }
+
+        if (is_string($excepts)) {
+            unset($fields[$excepts]);
+        }
+
+        return $fields;
     }
 
-    public function getUri()
+    public static function query(string $name)
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        return $uri !== '/' ? rtrim($uri, '/') : '/';
-    }
-
-    public function getHttpMethod()
-    {
-        return $_SERVER['REQUEST_METHOD'] ?? '';
+        return isset($_GET[$name]) ? $_GET[$name] : '';
     }
 }
