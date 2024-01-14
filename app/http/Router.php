@@ -2,7 +2,7 @@
 
 namespace app\http;
 
-use Closure;
+use app\http\middlewares\Queue;
 use Exception;
 
 class Router
@@ -15,30 +15,37 @@ class Router
         $this->request = new Request;
     }
 
-    public function get(string $path, mixed $controller)
+    public function get(string $path, array $actions, array $middlewares = [])
     {
-        $this->addRoute('GET', $path, $controller);
-    }
-    public function post(string $path, mixed $controller)
-    {
-        $this->addRoute('POST', $path, $controller);
-    }
-    public function put(string $path, mixed $controller)
-    {
-        $this->addRoute('PUT', $path, $controller);
-    }
-    public function patch(string $path, mixed $controller)
-    {
-        $this->addRoute('PATCH', $path, $controller);
-    }
-    public function delete(string $path, mixed $controller)
-    {
-        $this->addRoute('DELETE', $path, $controller);
+        $this->addRoute('GET', $path, $actions, $middlewares);
     }
 
-    private function addRoute($method, $route, $controller)
+    public function post(string $path, array $actions, array $middlewares = [])
     {
-        $this->routes[$route][$method] = $controller;
+        $this->addRoute('POST', $path, $actions, $middlewares);
+    }
+
+    public function put(string $path, array $actions, array $middlewares = [])
+    {
+        $this->addRoute('PUT', $path, $actions, $middlewares);
+    }
+
+    public function patch(string $path, array $actions, array $middlewares = [])
+    {
+        $this->addRoute('PATCH', $path, $actions, $middlewares);
+    }
+
+    public function delete(string $path, array $actions, array $middlewares = [])
+    {
+        $this->addRoute('DELETE', $path, $actions, $middlewares);
+    }
+
+    private function addRoute(string $method, string $route, array $actions, array $middlewares)
+    {
+        $this->routes[$route][$method] = [
+            'actions' => $actions,
+            'middlewares' => $middlewares
+        ];
     }
 
     public function run()
@@ -47,13 +54,11 @@ class Router
             $data = $this->getRoute();
 
             if (empty($data)) {
-                throw new Exception('route not found', 400);
-            }
-            if ($data['actions'] instanceof Closure) {
-                return $data['actions']();
+                throw new Exception('route not found', 404);
             }
 
-            $this->getController($data);
+            $response = $this->getController($data);
+            $response->send();
         } catch (Exception $e) {
             return (new Response(['error' => $e->getMessage()], $e->getCode()))->send();
         }
@@ -70,9 +75,10 @@ class Router
 
             if (preg_match($patternRoute, $uri) && !empty($route[$httpMethod])) {
                 return [
-                    'actions' => $route[$httpMethod],
-                    'path' => $method,
-                    'uri' => $uri
+                    'actions'     => $route[$httpMethod]['actions'],
+                    'middlewares' => $route[$httpMethod]['middlewares'],
+                    'path'        => $method,
+                    'uri'         => $uri
                 ];
             }
         }
@@ -105,9 +111,7 @@ class Router
             $this->request->setParams($params);
         }
 
-        $response = $controller->$method($this->request);
-
-        $response->send();
+        return (new Queue($data['middlewares'], $controller, $method))->next($this->request);
     }
 
     private function getParams($path, $uri)
