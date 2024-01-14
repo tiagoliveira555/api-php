@@ -6,7 +6,7 @@ use Exception;
 
 class AuthMiddleware
 {
-    public function handle($request, $next)
+    public function handle($next)
     {
         $auth = false;
 
@@ -14,6 +14,6 @@ class AuthMiddleware
             throw new Exception('Unauthorized');
         }
 
-        return $next($request);
+        return $next();
     }
 }

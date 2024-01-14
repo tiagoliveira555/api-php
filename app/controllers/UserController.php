@@ -11,9 +11,9 @@ class UserController
         return new Response('USER::INDEX');
     }
 
-    public function show()
+    public function show($params)
     {
-        return new Response('USER::SHOW');
+        return new Response('USER::SHOW ' . $params['id']);
     }
 
     public function create()

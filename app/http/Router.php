@@ -3,118 +3,95 @@
 namespace app\http;
 
 use app\http\middlewares\Queue;
+use app\support\Method;
+use app\support\Uri;
 use Exception;
 
 class Router
 {
-    private Request $request;
-    private array $routes = [];
+    private static array $routes = [];
 
-    public function __construct()
+    public static function get(string $path, array $actions, array $middlewares = [])
     {
-        $this->request = new Request;
+        self::addRoute('GET', $path, $actions, $middlewares);
     }
 
-    public function get(string $path, array $actions, array $middlewares = [])
+    public static function post(string $path, array $actions, array $middlewares = [])
     {
-        $this->addRoute('GET', $path, $actions, $middlewares);
+        self::addRoute('POST', $path, $actions, $middlewares);
     }
 
-    public function post(string $path, array $actions, array $middlewares = [])
+    public static function put(string $path, array $actions, array $middlewares = [])
     {
-        $this->addRoute('POST', $path, $actions, $middlewares);
+        self::addRoute('PUT', $path, $actions, $middlewares);
     }
 
-    public function put(string $path, array $actions, array $middlewares = [])
+    public static function patch(string $path, array $actions, array $middlewares = [])
     {
-        $this->addRoute('PUT', $path, $actions, $middlewares);
+        self::addRoute('PATCH', $path, $actions, $middlewares);
     }
 
-    public function patch(string $path, array $actions, array $middlewares = [])
+    public static function delete(string $path, array $actions, array $middlewares = [])
     {
-        $this->addRoute('PATCH', $path, $actions, $middlewares);
+        self::addRoute('DELETE', $path, $actions, $middlewares);
     }
 
-    public function delete(string $path, array $actions, array $middlewares = [])
+    private static function addRoute(string $method, string $route, array $controller, array $middlewares)
     {
-        $this->addRoute('DELETE', $path, $actions, $middlewares);
-    }
-
-    private function addRoute(string $method, string $route, array $actions, array $middlewares)
-    {
-        $this->routes[$route][$method] = [
-            'actions' => $actions,
+        self::$routes[$route][$method] = [
+            'controller' => $controller,
             'middlewares' => $middlewares
         ];
     }
 
-    public function run()
+    public static function run()
     {
         try {
-            $data = $this->getRoute();
+            $data = self::getRoute();
 
             if (empty($data)) {
                 throw new Exception('route not found', 404);
             }
 
-            $response = $this->getController($data);
+            $response = self::getController($data);
             $response->send();
         } catch (Exception $e) {
             return (new Response(['error' => $e->getMessage()], $e->getCode()))->send();
         }
     }
 
-    private function getRoute()
+    private static function getRoute()
     {
-        $uri = $this->request->getUri();
-        $httpMethod = $this->request->getHttpMethod();
+        $uri = uri();
+        $httpMethod = httpMethod();
 
-        foreach ($this->routes as $method => $route) {
+        foreach (self::$routes as $method => $route) {
             $pathRegex = preg_replace('/{[\w\-]+}/', '[\w\-]+', $method);
             $patternRoute = '#^' . $pathRegex . '$#';
 
             if (preg_match($patternRoute, $uri) && !empty($route[$httpMethod])) {
                 return [
-                    'actions'     => $route[$httpMethod]['actions'],
-                    'middlewares' => $route[$httpMethod]['middlewares'],
                     'path'        => $method,
-                    'uri'         => $uri
+                    'uri'         => $uri,
+                    'controller'  => $route[$httpMethod]['controller'][0],
+                    'method'      => $route[$httpMethod]['controller'][1] ?? '',
+                    'middlewares' => $route[$httpMethod]['middlewares']
                 ];
             }
         }
     }
 
-    private function getController(array $data)
+    private static function getController(array $data)
     {
-        $actions = implode($data['actions']);
-
-        if (!str_contains($actions, ':')) {
-            throw new Exception('actions with wrong format', 400);
-        }
-
-        [$controller, $method] = explode(':', $actions);
-
-        $controllerNamespace = 'app\\controllers\\' . $controller;
-
-        if (!class_exists($controllerNamespace)) {
-            throw new Exception($controller . ' not exists', 400);
-        }
-        $controller = new $controllerNamespace;
-
-        if (!method_exists($controller, $method)) {
-            throw new Exception('method ' . $method . ' not exists in ' . $controllerNamespace, 400);
-        }
-
         $params = [];
         if (str_contains($data['path'], '{')) {
-            $params = $this->getParams($data['path'], $data['uri']);
-            $this->request->setParams($params);
+            $params = self::getParams($data['path'], $data['uri']);
         }
 
-        return (new Queue($data['middlewares'], $controller, $method))->next($this->request);
+        return (new Queue($data['middlewares'], $data['controller'], $data['method'], $params))->next();
     }
 
-    private function getParams($path, $uri)
+    private static function getParams($path, $uri)
     {
         preg_match_all('/{([\w\-]+)}/', $path, $matches);
         $keys = $matches[1];

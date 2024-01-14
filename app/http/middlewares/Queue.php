@@ -8,11 +8,17 @@ class Queue
 {
     public static array $map = [];
 
-    public function __construct(
-        private array $middlewares = [],
-        private object $controller,
-        private string $method
-    ) {
+    private array $middlewares = [];
+    private object $controller;
+    private string $method;
+    private array $params;
+
+    public function __construct($middlewares, $controller, $method, $params)
+    {
+        $this->middlewares = $middlewares;
+        $this->controller = new $controller;
+        $this->method = $method;
+        $this->params = $params;
     }
 
     public static function setMat($map)
@@ -20,11 +26,15 @@ class Queue
         self::$map = $map;
     }
 
-    public function next($request)
+    public function next()
     {
+        if (!method_exists($this->controller, $this->method)) {
+            throw new Exception('method ' . $this->method . ' not exists in ' . $this->controller::class, 400);
+        }
+
         $method = $this->method;
         if (empty($this->middlewares)) {
-            return $this->controller->$method();
+            return $this->controller->$method($this->params);
         }
 
         $middleware = array_shift($this->middlewares);
@@ -38,6 +48,6 @@ class Queue
             return $queue->next($request);
         };
 
-        return (new self::$map[$middleware])->handle($request, $next);
+        return (new self::$map[$middleware])->handle($next);
     }
 }
