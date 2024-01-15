@@ -7,6 +7,8 @@ use app\http\Router;
 Router::get('/', [HomeController::class, 'index']);
 Router::get('/users', [UserController::class, 'index']);
 Router::post('/users', [UserController::class, 'create']);
+Router::put('/users/{id}', [UserController::class, 'update']);
+Router::delete('/users/{id}', [UserController::class, 'delete']);
 Router::get('/users/{id}', [UserController::class, 'show']);
 Router::get('/users/{id}/name/{name}', [UserController::class, 'edit']);
 Router::post('/', [HomeController::class, 'create']);

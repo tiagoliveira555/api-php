@@ -11,7 +11,7 @@ class Queue
     private array $middlewares = [];
     private object $controller;
     private string $method;
-    private array $params;
+    private ?object $params;
 
     public function __construct($middlewares, $controller, $method, $params)
     {

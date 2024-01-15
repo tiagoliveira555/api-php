@@ -39,11 +39,11 @@ class Request
             unset($fields[$excepts]);
         }
 
-        return $fields;
+        return (object)$fields;
     }
 
     public static function query(string $name)
     {
-        return isset($_GET[$name]) ? $_GET[$name] : '';
+        return $_GET[$name] ?? '';
     }
 }

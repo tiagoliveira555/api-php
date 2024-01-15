@@ -82,7 +82,7 @@ class Router
 
     private static function getController(array $data)
     {
-        $params = [];
+        $params = null;
         if (str_contains($data['path'], '{')) {
             $params = self::getParams($data['path'], $data['uri']);
         }
@@ -104,6 +104,6 @@ class Router
                 $values[] = $explodeUri[$index];
             }
         }
-        return array_combine($keys, $values);
+        return (object)array_combine($keys, $values);
     }
 }
