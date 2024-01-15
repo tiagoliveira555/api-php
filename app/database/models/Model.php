@@ -3,6 +3,7 @@
 namespace app\database\models;
 
 use app\database\Connection;
+use PDO;
 use PDOException;
 
 abstract class Model
@@ -26,8 +27,24 @@ abstract class Model
         }
     }
 
-    public function fetchAll()
+    public function findAll()
     {
+        $query = "SELECT * FROM {$this->table}";
+
+        $response = $this->execute($query);
+
+        return $response->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function findBy(array $where)
+    {
+        $whereKey = array_keys($where)[0];
+
+        $query = "SELECT * FROM {$this->table} WHERE " . $whereKey . " = ?";
+
+        $response = $this->execute($query, array_values($where));
+
+        return $response->fetchObject();
     }
 
     public function insert(array $data)
