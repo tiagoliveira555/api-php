@@ -1,6 +1,5 @@
 <?php
 
-use app\database\Connection;
 use app\http\middlewares\Queue;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';

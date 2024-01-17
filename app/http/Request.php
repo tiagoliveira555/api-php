@@ -4,10 +4,22 @@ namespace app\http;
 
 class Request
 {
+
     public static function all()
     {
         $input = file_get_contents('php://input');
         return strlen($input) ? json_decode($input, true) : '';
+    }
+
+    public static function input(string $field)
+    {
+        $fields = self::all();
+
+        foreach ($fields as $index => $value) {
+            if ($index === $field) {
+                return $value;
+            }
+        }
     }
 
     public static function only(string|array $only)

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\database\models\User;
 use app\http\Request;
 use app\http\Response;
+use app\http\validations\Validation;
 use Exception;
 
 class UserController
@@ -48,12 +49,22 @@ class UserController
 
     public function create(): Response
     {
+        $errors =  Validation::validate([
+            'name' => ['required', 'min:3', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'min:8', 'max:255']
+        ]);
+
+        if ($errors) {
+            return new Response($errors, 400);
+        }
+
         $request = Request::only(['name', 'email', 'password']);
 
         $userFound = $this->user->findBy(['email' => $request->email]);
 
         if ($userFound) {
-            throw new Exception('email already in use', 404);
+            throw new Exception('email already in use', 400);
         }
         $userId = $this->user->insert([
             'name'     => $request->name,
@@ -72,6 +83,16 @@ class UserController
 
     public function update(object $params): Response
     {
+        $errors =  Validation::validate([
+            'name' => ['required', 'min:3', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'min:8', 'max:255']
+        ]);
+
+        if ($errors) {
+            return new Response($errors, 400);
+        }
+
         $request = Request::only(['name', 'email', 'password']);
 
         $user = $this->user->findBy(['id' => $params->id]);

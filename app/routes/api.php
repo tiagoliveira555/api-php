@@ -1,17 +1,21 @@
 <?php
 
-use app\controllers\HomeController;
-use app\controllers\UserController;
 use app\http\Router;
+use app\controllers\UserController;
+use app\controllers\HomeController;
 
-Router::get('/', [HomeController::class, 'index']);
+#region User
 Router::get('/users', [UserController::class, 'index']);
+Router::get('/users/{id}', [UserController::class, 'show']);
 Router::post('/users', [UserController::class, 'create']);
 Router::put('/users/{id}', [UserController::class, 'update']);
 Router::delete('/users/{id}', [UserController::class, 'delete']);
-Router::get('/users/{id}', [UserController::class, 'show']);
-Router::get('/users/{id}/name/{name}', [UserController::class, 'edit']);
+#endregion
+
+#region Home
+Router::get('/', [HomeController::class, 'index']);
 Router::post('/', [HomeController::class, 'create']);
 Router::put('/', [HomeController::class, 'edit']);
+#endregion
 
 Router::run();

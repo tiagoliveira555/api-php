@@ -17,9 +17,11 @@ class Response
 
         if (!empty($this->headers)) {
             foreach ($this->headers as $key => $value) {
-                header("$key : $value");
+                header("$key:$value");
             }
         }
+
+        header("Content-Type:application/json");
 
         echo json_encode($this->body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
