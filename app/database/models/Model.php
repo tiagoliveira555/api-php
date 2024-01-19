@@ -27,6 +27,31 @@ abstract class Model
         }
     }
 
+    public function pagination(array $paginate)
+    {
+        $query = "SELECT * FROM {$this->table} LIMIT :offset,:limit";
+
+        try {
+            $statement = $this->connection->prepare($query);
+            $statement->bindParam(':offset', $paginate['offset'], PDO::PARAM_INT);
+            $statement->bindParam(':limit', $paginate['limit'], PDO::PARAM_INT);
+            $statement->execute();
+
+            return $statement->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), 500);
+        }
+    }
+
+    public function count()
+    {
+        $query = "SELECT COUNT(*) as count FROM {$this->table}";
+
+        $response = $this->execute($query);
+
+        return $response->fetchObject()->count;
+    }
+
     public function findAll()
     {
         $query = "SELECT * FROM {$this->table}";
@@ -56,7 +81,9 @@ abstract class Model
 
         $this->execute($query, array_values($data));
 
-        return $this->connection->lastInsertId();
+        $lastId = $this->connection->lastInsertId();
+
+        return $this->findBy(['id' => $lastId]);
     }
 
     public function update($where, $data)
@@ -68,7 +95,7 @@ abstract class Model
 
         $this->execute($query, $values);
 
-        return true;
+        return $this->findBy($where);
     }
 
     public function delete($where)

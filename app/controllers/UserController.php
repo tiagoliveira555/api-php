@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\database\models\Pagination;
 use app\database\models\User;
 use app\http\Request;
 use app\http\Response;
@@ -17,46 +18,36 @@ class UserController
 
     public function index()
     {
-        $users = array_map(function ($user) {
-            return [
-                'id'         => $user->id,
-                'name'       => $user->name,
-                'email'      => $user->email,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at
-            ];
-        }, $this->user->findAll());
+        $pagination = new Pagination;
+        $pagination->setTotalItems($this->user->count());
+        $paginate = $pagination->calculations();
 
-        return new Response($users);
+        $usersPagination = $this->user->pagination($paginate);
+
+        $users = array_map(fn ($user) => $this->userWithoutPassword($user), $usersPagination);
+
+        return new Response([
+            'page' => $pagination->getPagination(),
+            'data' => $users
+        ]);
     }
 
-    public function show($params)
+    public function show(object $params)
     {
         $user = $this->user->findBy(['id' => $params->id]);
 
         if (!$user) {
             throw new Exception('user not found', 404);
         }
-
-        return new Response([
-            'id'         => $user->id,
-            'name'       => $user->name,
-            'email'      => $user->email,
-            'created_at' => $user->created_at,
-            'updated_at' => $user->updated_at
-        ]);
+        return new Response($this->userWithoutPassword($user), 200);
     }
 
     public function create(): Response
     {
-        $errors =  Validation::validate([
-            'name' => ['required', 'min:3', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'min:8', 'max:255']
-        ]);
+        $errors = $this->userValidation();
 
         if ($errors) {
-            return new Response($errors, 400);
+            return new Response(['errors' => $errors], 400);
         }
 
         $request = Request::only(['name', 'email', 'password']);
@@ -66,28 +57,18 @@ class UserController
         if ($userFound) {
             throw new Exception('email already in use', 400);
         }
-        $userId = $this->user->insert([
+        $user = $this->user->insert([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => password_hash($request->password, PASSWORD_DEFAULT)
         ]);
 
-        return new Response([
-            'id'    => (int)$userId,
-            'name'  => $request->name,
-            'email' => $request->email,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
-        ], 201);
+        return new Response($this->userWithoutPassword($user), 201);
     }
 
     public function update(object $params): Response
     {
-        $errors =  Validation::validate([
-            'name' => ['required', 'min:3', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'min:8', 'max:255']
-        ]);
+        $errors =  $this->userValidation();
 
         if ($errors) {
             return new Response($errors, 400);
@@ -107,19 +88,13 @@ class UserController
             throw new Exception('email already in use', 400);
         }
 
-        $this->user->update(['id' => $user->id], [
+        $user = $this->user->update(['id' => $user->id], [
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => password_hash($request->password, PASSWORD_DEFAULT)
         ]);
 
-        return new Response([
-            'id'         => $user->id,
-            'name'       => $request->name,
-            'email'      => $request->email,
-            'created_at' => $user->created_at,
-            'updated_at' => date('Y-m-d H:i:s')
-        ], 200);
+        return new Response($this->userWithoutPassword($user), 200);
     }
 
     public function delete(object $params): Response
@@ -133,5 +108,25 @@ class UserController
         $this->user->delete(['id' => $user->id]);
 
         return new Response('', 204);
+    }
+
+    private function userWithoutPassword(object $user)
+    {
+        return [
+            'id'         => $user->id,
+            'name'       => $user->name,
+            'email'      => $user->email,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at
+        ];
+    }
+
+    private function userValidation()
+    {
+        return Validation::validate([
+            'name' => ['required', 'min:3', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'min:8', 'max:255']
+        ]);
     }
 }

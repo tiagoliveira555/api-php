@@ -64,7 +64,7 @@ class Validation
         $data = Request::input($field);
 
         if (!is_numeric($param)) {
-            throw new Exception('Parameter for min must be a numeric value');
+            throw new Exception('parameter for min must be a numeric value');
         }
 
         $param = (int)$param;
