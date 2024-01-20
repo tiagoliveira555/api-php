@@ -41,6 +41,10 @@ CREATE TABLE users (
 
 **Listar todos os usuários com paginação**
 ```http
+GET /users
+```
+Exemplo de requisição:
+```http
 GET /users?per_page=4&page=6
 ```
 ![Listar Todos Usuários com paginação](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_01.png)
@@ -52,7 +56,7 @@ GET /users/{id}
 ```
 Exemplo de requisição:
 ```http
-PUT /users/31
+GET /users/31
 ```
 ![Listar um usuário específico](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_03.png)
 
