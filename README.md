@@ -52,7 +52,7 @@ GET /users/{id}
 ```
 Exemplo de requisição:
 ```http
-PUT /users/32
+PUT /users/31
 ```
 ![Listar um usuário específico](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_03.png)
 
