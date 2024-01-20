@@ -2,6 +2,8 @@
 
 namespace app\database\models;
 
+use app\http\Request;
+
 class Pagination
 {
     private int $currentPage = 1;
@@ -31,8 +33,8 @@ class Pagination
 
     public function getLimit()
     {
-        $this->currentPage = $_GET['page'] > 0 ? $_GET['page'] : 1;
-        $this->itemsPerPage = $_GET['per_page'] ?? 5;
+        $this->currentPage = Request::query('page') > 0 ? Request::query('page') : 1;
+        $this->itemsPerPage = Request::query('per_page') ?? 5;
 
         $offset = ($this->currentPage - 1) * $this->itemsPerPage;
         $this->totalPages = ceil($this->totalItems / $this->itemsPerPage);
