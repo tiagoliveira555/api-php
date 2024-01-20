@@ -2,7 +2,7 @@
 
 # API Rest desenvolvida em PHP sem Framework
 
-Esta API Rest foi desenvolvida em PHP sem a utilização de dependências externas, utilizando apenas PHP puro. Ela oferece várias funcionalidades, incluindo rotas dinâmicas, paginação, validação de entrada de dados, environment para guardar dados senvíveis e o uso de middleware para autenticação do usuário. Com esta API, é possível realizar operações básicas em um sistema de gerenciamento de usuários, como listar todos os usuários com paginação, visualizar informações de um usuário específico, criar novos usuários, atualizar e deletar.
+Esta API Rest foi desenvolvida em PHP sem a utilização de dependências externas, utilizando apenas PHP puro. Ela oferece várias funcionalidades, incluindo rotas dinâmicas, paginação, validação de entrada de dados, tratamento de exceções, environment para guardar dados senvíveis e o uso de middleware para autenticação do usuário. Com esta API, é possível realizar operações básicas em um sistema de gerenciamento de usuários, como listar todos os usuários com paginação, visualizar informações de um usuário específico, criar novos usuários, atualizar e deletar.
 
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
