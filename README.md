@@ -2,7 +2,7 @@
 
 # API Rest desenvolvida em PHP sem Framework
 
-Esta API Rest foi desenvolvida em PHP sem a utilização de dependências externas, utilizando apenas PHP puro. Ela oferece várias funcionalidades, incluindo rotas dinâmicas, paginação, validação de entrada de dados e o uso de middlewares. Com esta API, é possível realizar operações básicas em um sistema de gerenciamento de usuários, como listar todos os usuários com paginação, visualizar informações de um usuário específico, criar novos usuários, atualizar e deletar.
+Esta API Rest foi desenvolvida em PHP sem a utilização de dependências externas, utilizando apenas PHP puro. Ela oferece várias funcionalidades, incluindo rotas dinâmicas, paginação, validação de entrada de dados, environment para guardar dados senvíveis e o uso de middlewares. Com esta API, é possível realizar operações básicas em um sistema de gerenciamento de usuários, como listar todos os usuários com paginação, visualizar informações de um usuário específico, criar novos usuários, atualizar e deletar.
 
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
@@ -32,9 +32,10 @@ CREATE TABLE users (
 
 1. Clone o repositório: .
 2. Navegue até o diretório `api-php`.
-3. Atualize o composer com `composer du`.
-4. Inicie o servidor com `php -S localhost:8000 -t public`.
-5. Acesse `http://localhost:8000/`
+3. Renomei o arquivo `.env.example` para `.env` e coloque as informações do seu banco de dados.
+4. Atualize o composer com `composer du`.
+5. Inicie o servidor com `php -S localhost:8000 -t public`.
+6. Acesse `http://localhost:8000/`
 
 ## EndPoints
 
