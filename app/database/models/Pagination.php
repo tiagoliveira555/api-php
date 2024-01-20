@@ -24,8 +24,8 @@ class Pagination
     public function getPagination()
     {
         return [
-            'per_page'    => $this->itemsPerPage,
             'page'        => $this->currentPage,
+            'per_page'    => $this->itemsPerPage,
             'total_pages' => $this->totalPages,
             'total_items' => $this->totalItems
         ];

@@ -2,10 +2,8 @@
 
 namespace app\controllers;
 
-use app\database\models\Pagination;
-use app\database\models\User;
-use app\http\Request;
-use app\http\Response;
+use app\database\models\{User, Pagination};
+use app\http\{Request, Response};
 use app\http\validations\Validation;
 use Exception;
 

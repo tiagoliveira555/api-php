@@ -1,8 +1,7 @@
 <?php
 
 use app\http\Router;
-use app\controllers\UserController;
-use app\controllers\HomeController;
+use app\controllers\{HomeController, UserController};
 
 #region Home
 Router::get('/', [HomeController::class, 'index']);

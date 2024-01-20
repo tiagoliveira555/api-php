@@ -64,13 +64,13 @@ class Router
         $uri = uri();
         $httpMethod = httpMethod();
 
-        foreach (self::$routes as $method => $route) {
-            $pathRegex = preg_replace('/{[\w\-]+}/', '[\w\-]+', $method);
+        foreach (self::$routes as $path => $route) {
+            $pathRegex = preg_replace('/{[\w\-]+}/', '[\w\-]+', $path);
             $patternRoute = '#^' . $pathRegex . '$#';
 
             if (preg_match($patternRoute, $uri) && !empty($route[$httpMethod])) {
                 return [
-                    'path'        => $method,
+                    'path'        => $path,
                     'uri'         => $uri,
                     'controller'  => $route[$httpMethod]['controller'][0],
                     'method'      => $route[$httpMethod]['controller'][1] ?? '',
