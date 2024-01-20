@@ -1,4 +1,4 @@
-![Logo]()
+![Logo](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_07.png)
 
 # API Rest desenvolvida em PHP sem Framework
 
@@ -43,7 +43,7 @@ CREATE TABLE users (
 ```http
 GET /users?per_page=4&page=6
 ```
-![Listar Todos Usuários com paginação]()
+![Listar Todos Usuários com paginação](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_02.png)
 
 
 **Visualizar um usuário**
@@ -54,7 +54,7 @@ Exemplo de requisição:
 ```http
 PUT /users/32
 ```
-![Listar um usuário específico]()
+![Listar um usuário específico](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_03.png)
 
 **Cadastrar novo usuário**
 ```http
@@ -68,7 +68,7 @@ Exemplo de requisição:
     "password": "12345678"
 }
 ```
-![Novo Usuário]()
+![Novo Usuário](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_04.png)
 
 **Atualizar um usuário**
 ```http
@@ -85,6 +85,7 @@ PUT /users/32
     "password": "123456789"
 }
 ```
+![Atualizar Usuário](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_05.png)
 
 **Deletar um usuário**
 ```http
@@ -94,7 +95,7 @@ Exemplo de requisição:
 ```http
 DELETE /contas/32
 ```
-![Deletar um Usuário]()
+![Deletar um Usuário](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_06.png)
 
 ---
 
