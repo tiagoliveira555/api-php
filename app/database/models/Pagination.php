@@ -31,7 +31,7 @@ class Pagination
         ];
     }
 
-    public function getLimit()
+    public function paginate()
     {
         $this->currentPage = Request::query('page') > 0 ? Request::query('page') : 1;
         $this->itemsPerPage = Request::query('per_page') ?? 5;
