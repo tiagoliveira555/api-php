@@ -33,8 +33,8 @@ class Pagination
 
     public function paginate()
     {
-        $this->currentPage = Request::query('page') > 0 ? Request::query('page') : 1;
-        $this->itemsPerPage = Request::query('per_page') ?? 5;
+        $this->currentPage = !empty(Request::query('page')) ? Request::query('page') : 1;
+        $this->itemsPerPage = !empty(Request::query('per_page')) ? Request::query('per_page') : 5;
 
         $offset = ($this->currentPage - 1) * $this->itemsPerPage;
         $this->totalPages = ceil($this->totalItems / $this->itemsPerPage);
