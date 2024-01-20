@@ -43,9 +43,10 @@ class Queue
             throw new Exception('problems with the request middleware', 500);
         }
 
+
         $queue = $this;
-        $next = function ($request) use ($queue) {
-            return $queue->next($request);
+        $next = function () use ($queue) {
+            return $queue->next();
         };
 
         return (new self::$map[$middleware])->handle($next);

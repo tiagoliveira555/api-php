@@ -20,15 +20,15 @@ class UserController
     {
         $pagination = new Pagination;
         $pagination->setTotalItems($this->user->count());
-        $paginate = $pagination->calculations();
+        $limit = $pagination->getLimit();
 
-        $usersPagination = $this->user->pagination($paginate);
+        $usersPagination = $this->user->pagination($limit);
 
         $users = array_map(fn ($user) => $this->userWithoutPassword($user), $usersPagination);
 
         return new Response([
-            'page' => $pagination->getPagination(),
-            'data' => $users
+            'data'       => $users,
+            'pagination' => $pagination->getPagination()
         ]);
     }
 

@@ -5,11 +5,11 @@ use app\controllers\UserController;
 use app\controllers\HomeController;
 
 #region User
-Router::get('/users', [UserController::class, 'index']);
-Router::get('/users/{id}', [UserController::class, 'show']);
-Router::post('/users', [UserController::class, 'create']);
-Router::put('/users/{id}', [UserController::class, 'update']);
-Router::delete('/users/{id}', [UserController::class, 'delete']);
+Router::get('/users', [UserController::class, 'index'], ['auth']);
+Router::get('/users/{id}', [UserController::class, 'show'], ['auth']);
+Router::post('/users', [UserController::class, 'create'], ['auth']);
+Router::put('/users/{id}', [UserController::class, 'update'], ['auth']);
+Router::delete('/users/{id}', [UserController::class, 'delete'], ['auth']);
 #endregion
 
 #region Home
