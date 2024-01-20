@@ -43,7 +43,7 @@ CREATE TABLE users (
 ```http
 GET /users?per_page=4&page=6
 ```
-![Listar Todos Usuários com paginação](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_02.png)
+![Listar Todos Usuários com paginação](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_01.png)
 
 
 **Visualizar um usuário**
