@@ -80,9 +80,9 @@ PUT /users/32
 ```
 ```json
 {
-    "name": "Tiago Updated",
-    "email": "tiagoupdated@mail.com",
-    "password": "123456789"
+    "name": "Tiago Oliveira",
+    "email": "tiagooliveira@mail.com",
+    "password": "12345678"
 }
 ```
 ![Atualizar Usuário](https://github.com/tiagoliveira555/api-php/blob/main/public/screenshots/php_05.png)
